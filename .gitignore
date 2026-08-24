@@ -1,0 +1,15 @@
+# here.now local state (contains claim tokens / secrets)
+.herenow/
+
+# QC backup snapshots
+_qc_backup_original/
+
+# here.now deploy build (derived from root files)
+_publish/
+
+# Claude Code local tooling config
+.claude/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
