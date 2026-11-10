@@ -112,6 +112,8 @@
   @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important } }
   [data-case] p { text-align: justify; text-justify: inter-word; }
   @media (max-width: 640px) {
+    [data-hero] h1 { font-size: clamp(28px, 9.6vw, 44px) !important; line-height: 1.08 !important; }
+    [data-hero] h1 > span { white-space: normal !important; }
     [data-nav] > div { gap: 2px 16px !important; padding: 4px 16px 8px !important; }
     [data-nav] > div > div { display: contents !important; }
     [data-nav] > div > span { display: none !important; }
