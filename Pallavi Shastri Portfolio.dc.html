@@ -101,15 +101,22 @@
   ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
   @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important } }
   [data-case] p { text-align: justify; text-justify: inter-word; }
+  [data-nav-toggle] { display: none; order: 2; appearance: none; background: none; border: 0; width: 44px; height: 44px; padding: 0; margin: 0; cursor: pointer; flex-direction: column; justify-content: center; align-items: center; gap: 5px; color: var(--color-text); border-radius: 12px; }
+  [data-nav-toggle]:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  [data-nav-toggle] span { display: block; width: 22px; height: 2px; border-radius: 2px; background: currentColor; transition: transform 240ms ease, opacity 200ms ease; }
+  [data-nav][data-menu-open] [data-nav-toggle] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  [data-nav][data-menu-open] [data-nav-toggle] span:nth-child(2) { opacity: 0; }
+  [data-nav][data-menu-open] [data-nav-toggle] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   @media (max-width: 640px) {
     [data-hero] h1 { font-size: clamp(28px, 9.6vw, 44px) !important; line-height: 1.08 !important; }
     [data-hero] h1 > span { white-space: normal !important; }
-    [data-nav] > div { gap: 2px 16px !important; padding: 4px 16px 8px !important; }
-    [data-nav] > div > div { display: contents !important; }
-    [data-nav] > div > span { display: none !important; }
-    [data-nav] > div > div > :first-child { margin-left: auto !important; }
-    [data-nav] > div > button, [data-nav] > div > div > button, [data-nav] > div > div > a { padding: 12px 0 !important; }
-    [data-nav] > div > div > div { flex: 0 0 100% !important; padding-left: 0 !important; border-left: 0 !important; }
+    [data-nav] > div { flex-wrap: wrap !important; gap: 0 !important; padding: 4px 6px 4px 16px !important; }
+    [data-nav] > div > button:first-child { padding: 12px 0 !important; }
+    [data-nav-toggle] { display: inline-flex !important; }
+    [data-nav] > div > div { display: none !important; order: 3; flex: 0 0 100% !important; flex-direction: column !important; align-items: stretch !important; gap: 0 !important; padding: 4px 10px 14px 0 !important; box-sizing: border-box !important; border-top: 1px solid rgba(47,61,70,0.09); }
+    [data-nav][data-menu-open] > div > div { display: flex !important; }
+    [data-nav] > div > div > button, [data-nav] > div > div > a { padding: 14px 0 !important; font-size: 17px !important; text-align: left !important; border-bottom: 1px solid rgba(47,61,70,0.07) !important; }
+    [data-nav] > div > div > div { padding: 16px 0 2px !important; border-left: 0 !important; }
     [style*="font-size: 10px"] { font-size: 11.5px !important; }
     [style*="font-size: 11px"] { font-size: 12px !important; }
     [style*="grid-template-columns: minmax(90px, 120px) 1fr minmax(100px, 160px)"] { grid-template-columns: 1fr !important; gap: 4px !important; }
@@ -117,12 +124,11 @@
     [style*="justify-content: center; align-items: flex-start; gap: clamp(12px, 2.4vw, 32px)"] > figure { flex: 0 1 calc(50% - 8px) !important; margin-top: 0 !important; }
   }
   @media (max-width: 400px) {
-    [data-nav] > div { column-gap: 10px !important; }
-    [data-nav] > div > div > button, [data-nav] > div > div > a { font-size: 12.5px !important; }
     [style*="width: clamp(170px, 26vw, 286px)"] { width: clamp(120px, 41vw, 170px) !important; }
   }
 </style>
 <script src="./image-slot.js"></script>
+<script src="./mobile-nav.js"></script>
 </helmet>
 <div data-app-root="1">
 
