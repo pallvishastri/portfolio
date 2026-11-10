@@ -101,6 +101,24 @@
   ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
   @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important } }
   [data-case] p { text-align: justify; text-justify: inter-word; }
+  @media (max-width: 640px) {
+    [data-nav] > div { gap: 2px 16px !important; padding: 4px 16px 8px !important; }
+    [data-nav] > div > div { display: contents !important; }
+    [data-nav] > div > span { display: none !important; }
+    [data-nav] > div > div > :first-child { margin-left: auto !important; }
+    [data-nav] > div > button, [data-nav] > div > div > button, [data-nav] > div > div > a { padding: 12px 0 !important; }
+    [data-nav] > div > div > div { flex: 0 0 100% !important; padding-left: 0 !important; border-left: 0 !important; }
+    [style*="font-size: 10px"] { font-size: 11.5px !important; }
+    [style*="font-size: 11px"] { font-size: 12px !important; }
+    [style*="grid-template-columns: minmax(90px, 120px) 1fr minmax(100px, 160px)"] { grid-template-columns: 1fr !important; gap: 4px !important; }
+    [style*="justify-content: center; align-items: flex-start; gap: clamp(12px, 2.4vw, 32px)"] { flex-wrap: wrap !important; row-gap: 24px !important; }
+    [style*="justify-content: center; align-items: flex-start; gap: clamp(12px, 2.4vw, 32px)"] > figure { flex: 0 1 calc(50% - 8px) !important; margin-top: 0 !important; }
+  }
+  @media (max-width: 400px) {
+    [data-nav] > div { column-gap: 10px !important; }
+    [data-nav] > div > div > button, [data-nav] > div > div > a { font-size: 12.5px !important; }
+    [style*="width: clamp(170px, 26vw, 286px)"] { width: clamp(120px, 41vw, 170px) !important; }
+  }
 </style>
 <script src="./image-slot.js"></script>
 </helmet>
