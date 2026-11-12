@@ -2615,6 +2615,11 @@ const GD_NOTES = {
 };
 
 // --- Page links: give every page its own address (designwithpallavi.com/citaxi etc.) ---
+// GitHub Pages sends unknown addresses to 404.html, which bounces back here as /?p=/citaxi; put the real address back.
+try {
+  const _p = new URLSearchParams(window.location.search).get("p");
+  if (_p && _p.charAt(0) === "/") window.history.replaceState(null, "", _p + window.location.hash);
+} catch (e) {}
 const PAGE_SLUGS = { home: "", case: "case-study", case2: "blossom", case3: "graphic-design", case4: "dojo", case5: "kloud-connect", case6: "4front", case7: "citaxi" };
 const PAGE_TITLES = { case: "Case study", case2: "Blossom", case3: "Graphic Design", case4: "Dojo", case5: "Kloud Connect", case6: "4Front", case7: "CiTaxi" };
 const pageFromPath = (path) => {

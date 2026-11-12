@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pallavi Shastri</title>
+<script>
+  // Project links like /citaxi have no file of their own on GitHub Pages.
+  // Send the visitor to the homepage with the address attached; the site then opens that project.
+  (function () {
+    var path = window.location.pathname.replace(/\/+$/, "") || "/";
+    window.location.replace("/?p=" + encodeURIComponent(path) + window.location.hash);
+  })();
+</script>
+</head>
+<body></body>
+</html>
