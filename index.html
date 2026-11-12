@@ -136,9 +136,62 @@
   @media (max-width: 400px) {
     [style*="width: clamp(170px, 26vw, 286px)"] { width: clamp(120px, 41vw, 170px) !important; }
   }
+  /* Mobile: project cards and graphic-design category cards stack on scroll */
+  @media (max-width: 640px) {
+    [data-stack] { display: flex !important; flex-direction: column !important; gap: 0 !important; transform: none !important; grid-auto-rows: auto !important; }
+    [data-stack] > * { position: sticky !important; top: calc(var(--stack-top, 72px) + var(--stack-i, 0) * 12px); margin-bottom: 20px; transform: scale(var(--stack-s, 1)) !important; transform-origin: 50% 0; filter: brightness(var(--stack-b, 1)); transition: none !important; will-change: transform; }
+    [data-stack] > *:last-child { margin-bottom: 0; }
+    [data-stack="home"] > * { min-height: 0 !important; background: #FFFFFF; border-radius: 11px; }
+  }
+  @media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+    [data-stack] > * { position: relative !important; top: auto; transform: none !important; filter: none; }
+  }
 </style>
 <script src="./image-slot.js"></script>
 <script src="./mobile-nav.js"></script>
+<script>
+/* Stacking cards on scroll (phones only): each card sticks under the header and the next one slides over it, while the one underneath shrinks back slightly. */
+(function () {
+  var mq = window.matchMedia("(max-width: 640px)");
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var ticking = false;
+  function headerH() {
+    var nav = document.querySelector("[data-nav]");
+    var h = nav ? nav.getBoundingClientRect().height : 60;
+    return Math.round(Math.max(48, Math.min(h, 120)) + 12);
+  }
+  function update() {
+    ticking = false;
+    var groups = document.querySelectorAll("[data-stack]");
+    var on = mq.matches && !still.matches;
+    var top = headerH();
+    for (var g = 0; g < groups.length; g++) {
+      var cards = groups[g].children;
+      for (var i = 0; i < cards.length; i++) {
+        var c = cards[i];
+        if (!on) { c.style.removeProperty("--stack-s"); c.style.removeProperty("--stack-b"); continue; }
+        c.style.setProperty("--stack-i", i);
+        c.style.setProperty("--stack-top", top + "px");
+        var next = cards[i + 1], p = 0;
+        if (next) {
+          var a = c.getBoundingClientRect(), b = next.getBoundingClientRect();
+          var span = Math.max(1, a.height);
+          p = Math.min(1, Math.max(0, (a.bottom - b.top) / span));
+        }
+        var depth = cards.length - 1 - i;
+        c.style.setProperty("--stack-s", (1 - p * Math.min(0.06, 0.02 * depth + 0.02)).toFixed(4));
+        c.style.setProperty("--stack-b", (1 - p * 0.12).toFixed(4));
+      }
+    }
+  }
+  function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", req, { passive: true });
+  window.addEventListener("resize", req);
+  if (mq.addEventListener) mq.addEventListener("change", req);
+  new MutationObserver(req).observe(document.documentElement, { childList: true, subtree: true });
+  req();
+})();
+</script>
 </helmet>
 <div data-app-root="1">
 
@@ -233,7 +286,7 @@
     </div>
 
     <div onMouseMove="{{ deckMove }}" onMouseLeave="{{ deckLeave }}" style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(18px, 4.5vw, 40px) clamp(52px, 8vw, 80px); perspective: 1500px;">
-      <div style="position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); grid-auto-rows: 1fr; gap: clamp(20px, 2.4vw, 32px); align-items: stretch; transform: rotateX(var(--deck-rx, 0deg)) rotateY(var(--deck-ry, 0deg)); transform-style: preserve-3d; transition: transform 220ms ease-out;">
+      <div data-stack="home" style="position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); grid-auto-rows: 1fr; gap: clamp(20px, 2.4vw, 32px); align-items: stretch; transform: rotateX(var(--deck-rx, 0deg)) rotateY(var(--deck-ry, 0deg)); transform-style: preserve-3d; transition: transform 220ms ease-out;">
         
         <div data-perch="1" data-reveal="1" style="position: relative; cursor: pointer; outline: none; min-height: var(--w7-min, auto); transform-style: preserve-3d; transform: translateZ(var(--w7-z, 0px)) scale(var(--w7-s, 1)); transition: transform 420ms cubic-bezier(0.34,1.56,0.64,1); animation: gdPop 620ms cubic-bezier(0.22,0.61,0.36,1) 0ms both;" style-hover="transform: translateZ(34px) scale(1.03)" style-focus="transform: translateZ(34px) scale(1.03)">
           <span aria-hidden="true" style="position: absolute; inset: -1px; border-radius: 11px; opacity: var(--w7-glow, 0); background: linear-gradient(135deg, color-mix(in srgb, var(--color-pink) 55%, transparent), transparent 78%); box-shadow: 0 0 42px 2px color-mix(in srgb, var(--color-pink) 42%, transparent); transition: opacity 380ms ease; pointer-events: none;"></span>
@@ -1012,7 +1065,7 @@
     
     <div style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(18px, 4.5vw, 40px); padding-top: clamp(26px, 4vw, 40px); padding-bottom: clamp(40px, 7vw, 72px);">
       <div style="display: flex; flex-direction: column; gap: clamp(52px, 7vw, 88px);">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(14px, 2.2vw, 22px);">
+      <div data-stack="gd" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(14px, 2.2vw, 22px);">
         <sc-for list="{{ gdCats }}" as="c" hint-placeholder-count="3">
         <div role="button" tabindex="0" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}" onKeyDown="{{ c.key }}" style="min-width: 0; display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; cursor: pointer; outline: none; background: #FFFFFF; border: 1.5px solid {{ c.border }}; box-shadow: {{ c.shadow }}; transition: transform 460ms cubic-bezier(0.34,1.56,0.64,1), border-color 300ms ease, box-shadow 460ms ease;" style-hover="transform: translateY(-6px)" style-focus="transform: translateY(-6px)">
           <div style="display: flex; gap: 8px; padding: 16px 16px 0; background: color-mix(in srgb, var(--color-accent) 6%, #FFFFFF);">
