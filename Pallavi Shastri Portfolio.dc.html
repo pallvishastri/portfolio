@@ -3074,7 +3074,7 @@ class Component extends DCLogic {
         isDoc: !!p.href, embedDoc: !!p.href && !p.cover, hasCover: !!p.cover, coverSrc: this._asset(p.cover) || "",
         notDoc: !p.href,
         cue: p.href ? "Open PDF" : "Open",
-        cursor: p.href ? "pointer" : "zoom-in",
+        cursor: "pointer",
         docTitle: p.href ? p.caption.split(", ")[1] || p.caption : "",
         docBrand: p.href ? p.caption.split(", ")[0] : "",
         brand: p.caption.split(", ")[0],
