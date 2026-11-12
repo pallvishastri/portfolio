@@ -2604,6 +2604,16 @@ const GD_NOTES = {
   Print: "CMYK · 3mm bleed · 300dpi"
 };
 
+// --- Page links: give every page its own address (designwithpallavi.com/citaxi etc.) ---
+const PAGE_SLUGS = { home: "", case: "case-study", case2: "blossom", case3: "graphic-design", case4: "dojo", case5: "kloud-connect", case6: "4front", case7: "citaxi" };
+const PAGE_TITLES = { case: "Case study", case2: "Blossom", case3: "Graphic Design", case4: "Dojo", case5: "Kloud Connect", case6: "4Front", case7: "CiTaxi" };
+const pageFromPath = (path) => {
+  const slug = String(path || "/").replace(/^\/+|\/+$/g, "").replace(/\.html$/, "").toLowerCase();
+  if (!slug || slug === "index") return "home";
+  for (const k in PAGE_SLUGS) if (PAGE_SLUGS[k] === slug) return k;
+  return null;
+};
+
 class Component extends DCLogic {
   state = { page: "home", option: 1 };
 
@@ -2781,6 +2791,16 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    this._baseTitle = this._baseTitle || document.title;
+    const startPage = pageFromPath(window.location.pathname);
+    if (startPage && startPage !== this.state.page) { this._fromUrl = true; this.setState({ page: startPage }); }
+    this._onPop = () => {
+      const p = pageFromPath(window.location.pathname) || "home";
+      if (p !== this.state.page) { this._fromUrl = true; this.setState({ page: p }); }
+    };
+    if (this._onPopOld) window.removeEventListener("popstate", this._onPopOld);
+    this._onPopOld = this._onPop;
+    window.addEventListener("popstate", this._onPop);
     this._awake = false;
     this.hydrateSrc();
     this._meshBoot();
@@ -3271,6 +3291,14 @@ class Component extends DCLogic {
     const page = this.state.page;
     if ((prev ? prev.page : this._prevPage) !== page) {
       this._prevPage = page;
+      try {
+        const url = "/" + (PAGE_SLUGS[page] || "");
+        if (!this._fromUrl && window.location.pathname !== url && PAGE_SLUGS[page] !== undefined) window.history[this._urlInit ? "pushState" : "replaceState"]({ page: page }, "", url);
+        this._urlInit = true;
+        this._fromUrl = false;
+        const base = this._baseTitle || document.title;
+        document.title = PAGE_TITLES[page] ? PAGE_TITLES[page] + " · " + base : base;
+      } catch (e) {}
       this.applyTheme();
       window.scrollTo(0, 0);
       if (this._syncToc) setTimeout(this._syncToc, 30);
@@ -3279,6 +3307,7 @@ class Component extends DCLogic {
   }
 
   componentWillUnmount() {
+    window.removeEventListener("popstate", this._onPop);
     cancelAnimationFrame(this._meshRaf);
     clearInterval(this._meshIv);
     window.removeEventListener("mousemove", this._meshPointer);

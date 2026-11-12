@@ -1,0 +1,15 @@
+# Lets project links like designwithpallavi.com/citaxi open (and refresh) correctly.
+Options -MultiViews
+RewriteEngine On
+
+# Remove a trailing slash (e.g. /citaxi/ -> /citaxi) so images keep loading
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# Real files (images, scripts, PDFs) are served as they are
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Every other address loads the site, which then shows the right page
+RewriteRule ^ index.html [L]
